@@ -15,7 +15,10 @@ log = "^0.4"
 simple_logger = "^1"
 simple-error = "0.2.1"
 juniper = "0.14.2"
-
+rusoto_core = {version = "0.43.0", default_features = false, features=["rustls"]}
+rusoto_credential =  "0.43.0"
+rusoto_s3 = {version = "0.43.0", default_features = false, features=["rustls"]}
+tokio = { version = "0.2", features = ["macros","io-util"] }
 [[bin]]
 name = "bootstrap"
 path = "src/bin/graphql.rs"

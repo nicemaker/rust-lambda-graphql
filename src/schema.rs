@@ -1,4 +1,5 @@
 use juniper::{FieldResult, GraphQLEnum, GraphQLInputObject, GraphQLObject, RootNode};
+use serde::{Deserialize, Serialize};
 
 #[derive(GraphQLEnum)]
 enum Episode {
@@ -7,21 +8,24 @@ enum Episode {
     Jedi,
 }
 
-#[derive(GraphQLObject)]
-#[graphql(description = "A humanoid creature in the Star Wars universe")]
-struct Human {
-    id: String,
-    name: String,
-    appears_in: Vec<Episode>,
-    home_planet: String,
+#[derive(GraphQLObject, Serialize, Deserialize, Debug, PartialEq)]
+#[graphql(description = "Some Skill Gathered During your Lifetime")]
+pub struct Skill {
+    pub id: String,
+    pub name: String,
+    pub group: String,
+    pub level: i32,
+    pub description: Option<String>,
 }
 
 #[derive(GraphQLInputObject)]
-#[graphql(description = "A humanoid creature in the Star Wars universe")]
-struct NewHuman {
+#[graphql(description = "Some Skill Gathered During your Lifetime")]
+struct SkillPut {
+    id: Option<String>,
     name: String,
-    appears_in: Vec<Episode>,
-    home_planet: String,
+    group: String,
+    level: i32,
+    description: Option<String>,
 }
 
 pub struct Context {}
@@ -43,19 +47,20 @@ impl QueryRoot {
     // To gain access to the context, we specify a argument
     // that is a reference to the Context type.
     // Juniper automatically injects the correct context here.
-    fn human(context: &Context, id: String) -> FieldResult<Human> {
+    fn skill(context: &Context, id: String) -> FieldResult<Skill> {
         // Get a db connection.
         //let connection = context.pool.get_connection()?;
         // Execute a db query.
         // Note the use of `?` to propagate errors.
-        let human = Human {
+        let skill = Skill {
             id: "123".to_owned(),
             name: "Han Solo".to_owned(),
-            appears_in: vec![Episode::NewHope],
-            home_planet: "Earth".to_owned(),
+            group: "AWS".to_owned(),
+            level: 1,
+            description: None,
         };
         // Return the result.
-        Ok(human)
+        Ok(skill)
     }
 }
 
@@ -65,15 +70,14 @@ pub struct MutationRoot;
     Context = Context,
 )]
 impl MutationRoot {
-    fn createHuman(context: &Context, new_human: NewHuman) -> FieldResult<Human> {
-        let human = Human {
-            name: new_human.name,
-            id: "123".to_owned(),
-            appears_in: new_human.appears_in,
-            home_planet: new_human.home_planet,
-        };
-
-        Ok(human)
+    fn skillPut(context: &Context, skill: SkillPut) -> FieldResult<Skill> {
+        Ok(Skill {
+            id: String::from("123"),
+            name: String::from("bla"),
+            group: String::from("bla"),
+            level: 1,
+            description: None,
+        })
     }
 }
 
